@@ -20,11 +20,11 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-# ロゴ表示（小さめ、中央）
+# ロゴ表示（大きめ、中央）
 def show_logo():
     st.markdown("<div style='text-align: center;'><img src='data:image/png;base64," +
                 base64.b64encode(open("logo.png", "rb").read()).decode() +
-                "' style='width: 25%;'></div>", unsafe_allow_html=True)
+                "' style='width: 40%;'></div>", unsafe_allow_html=True)
 
 # セリフ画像表示（大きめ、中央）
 def show_serif_image():
