@@ -29,7 +29,7 @@ def display_random_comment(file_path):
 
 # --- メイン関数 ---
 def main():
-    set_background("haikei.jpeg")
+    set_background("nanako_haikei.png")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
