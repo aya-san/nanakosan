@@ -52,11 +52,14 @@ def main():
         lucky_numbers = sorted(random.sample(range(1, 38), 7))
         numbers_text = ", ".join(str(n) for n in lucky_numbers)
 
-        # 数字表示
-        st.markdown(
-            f"<h3 style='text-align: center;'>ラッキー数字: {numbers_text}</h3>",
-            unsafe_allow_html=True
-        )
+        # ラッキー数字を表示（タイトル無し）
+lucky_numbers = sorted(random.sample(range(1, 38), 7))
+numbers_text = ", ".join(str(n) for n in lucky_numbers)
+
+st.markdown(
+    f"<h3 style='text-align: center; font-size: 28px;'>{numbers_text}</h3>",
+    unsafe_allow_html=True
+)
 
         # コメント読み込み
         try:
