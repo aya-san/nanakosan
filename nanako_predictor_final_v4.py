@@ -20,7 +20,7 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-# ロゴ表示（大きめ、中央）
+# ロゴ表示（大きめ、中央、スマホ対応）
 def show_large_logo():
     import base64
     with open("logo.png", "rb") as f:
@@ -28,8 +28,8 @@ def show_large_logo():
     st.markdown(
         f"""
         <div style='text-align: center; padding-top: 20px;'>
-            <img src='data:image/png;base64,{logo_encoded}' 
-                 style='width: 70%; max-width: 350px; height: auto;'>
+            <img src='data:image/png;base64,{logo_encoded}'
+                 style='width: 90%; max-width: 400px; height: auto;'>
         </div>
         """,
         unsafe_allow_html=True
