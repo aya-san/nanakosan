@@ -3,95 +3,73 @@ import pandas as pd
 import random
 import base64
 
+# --- 警告の非表示 ---
+st.set_page_config(page_title="ななこさん", layout="centered")
+st.markdown("""<style>.stDeployButton, .st-emotion-cache-1avcm0n, footer {visibility: hidden;}</style>""", unsafe_allow_html=True)
+
+# --- 背景設定 ---
 def set_background(image_file):
     with open(image_file, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
-    st.markdown(
-        f"""
+    st.markdown(f"""
         <style>
         .stApp {{
-            background-image: url("data:image/png;base64,{encoded}");
+            background-image: url("data:image/jpeg;base64,{encoded}");
             background-size: cover;
-            background-position: center;
         }}
         </style>
-        """,
-        unsafe_allow_html=True
-    )
+        """, unsafe_allow_html=True)
 
-def load_comments(txt_path):
-    with open(txt_path, encoding="utf-8") as f:
-        comments = f.read().split("。")
-    return [c for c in comments if c.strip()]
+set_background("haikei.jpeg")
 
-def display_logo():
-    st.markdown(
-        """
-        <div style='text-align:center;'>
-            <img src='data:image/png;base64,{}' width='180'>
-        </div>
-        """.format(get_base64("logo.png")),
-        unsafe_allow_html=True
-    )
+# --- 画像表示 ---
+st.image("logo.png", width=250)  # ロゴを小さく中央表示
+st.image("serif.png", use_column_width="auto")  # セリフ画像
 
-def display_serif():
-    st.image("serif.png", use_column_width=False, width=280)
+# --- ボタン画像の配置（上下） ---
+button1 = st.image("botann.png", use_column_width="auto")
+button2 = st.image("button2.png", use_column_width="auto")
 
-def get_base64(file_path):
-    with open(file_path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-def display_buttons():
-    st.markdown(
-        """
-        <div style='text-align:center;'>
-            <form action="?predict" method="post">
-                <button style="border:none;background:none;">
-                    <img src='data:image/png;base64,{}' width='250'>
-                </button>
-            </form>
-            <br>
-            <form action="?ranking" method="post">
-                <button style="border:none;background:none;">
-                    <img src='data:image/png;base64,{}' width='250'>
-                </button>
-            </form>
-        </div>
-        """.format(get_base64("botann.png"), get_base64("button2.png")),
-        unsafe_allow_html=True
-    )
-
-def show_prediction():
+# --- 抽選データの読み込みと数字予測 ---
+def predict_numbers():
     df = pd.read_csv("data.csv")
-    numbers = sorted(random.sample(range(1, 38), 7))
-    st.markdown(
-        f"<h3 style='text-align:center;'>ラッキー数字: {', '.join(map(str, numbers))}</h3>",
-        unsafe_allow_html=True
-    )
-    comments = load_comments("nanako_comment.txt")
-    comment = random.choice(comments).strip()
-    st.markdown(f"<div style='text-align:center;'>{comment}</div>", unsafe_allow_html=True)
+    numbers = df.iloc[:, 1:].values.flatten()
+    selected = random.sample(list(numbers), 7)
+    selected.sort()
+    return selected
 
-def main():
-    set_background("nanako_haikei.png")
-    st.markdown("<br>", unsafe_allow_html=True)
+# --- コメント読み込み ---
+def get_random_comment():
+    with open("nanako_comment.txt", "r", encoding="utf-8") as f:
+        comments = [line.strip("。\n") for line in f if line.strip()]
+    return random.choice(comments)
 
-    display_logo()
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-    display_serif()
-    st.markdown("</div>", unsafe_allow_html=True)
+# --- メイン処理 ---
+query_params = st.query_params  # ボタン判定用
+if "占う" in query_params:
+    lucky_numbers = predict_numbers()
+    comment = get_random_comment()
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    display_buttons()
+    st.markdown("## ラッキー数字: " + ", ".join(str(n) for n in lucky_numbers))
+    st.markdown(f"#### {comment}")
 
-    # クエリ処理によってボタンを識別
-    query_params = st.experimental_get_query_params()
-    if "predict" in query_params:
-        show_prediction()
-    elif "ranking" in query_params:
-        st.subheader("出現数字ランキング（仮）")
+elif "ランキング" in query_params:
+    df = pd.read_csv("data.csv")
+    numbers = df.iloc[:, 1:].values.flatten()
+    freq = pd.Series(numbers).value_counts().sort_values(ascending=False)
+    st.markdown("## 出現数字ランキング（仮）")
+    st.dataframe(freq.head(20))
 
-if __name__ == "__main__":
-    main()
+# --- JavaScriptで画像クリックをURLパラメータ付きで再読み込み ---
+st.markdown("""
+    <script>
+    const imgs = window.parent.document.querySelectorAll('img');
+    imgs.forEach(img => {
+        if (img.src.includes("botann")) {
+            img.onclick = () => window.parent.location.search = "?占う";
+        } else if (img.src.includes("button2")) {
+            img.onclick = () => window.parent.location.search = "?ランキング";
+        }
+    });
+    </script>
+""", unsafe_allow_html=True)
