@@ -3,8 +3,8 @@ import pandas as pd
 import random
 import base64
 
-# ページ設定（1回だけ）
-st.set_page_config(layout="centered")
+# ページ設定（レイアウトとタイトル）
+st.set_page_config(layout="centered", page_title="ななこさん")
 
 # 背景画像を設定
 def set_background(image_file):
@@ -21,7 +21,7 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-# ロゴ表示（大きめ、中央、スマホ対応）
+# ロゴ表示（中央・大きめ・スマホ対応）
 def show_large_logo():
     with open("logo.png", "rb") as f:
         logo_encoded = base64.b64encode(f.read()).decode()
@@ -35,24 +35,27 @@ def show_large_logo():
         unsafe_allow_html=True
     )
 
-# セリフ画像表示（大きめ、中央）
+# セリフ画像表示
 def show_serif_image():
-    st.markdown("<div style='text-align: center;'><img src='data:image/png;base64," +
-                base64.b64encode(open("serif.png", "rb").read()).decode() +
-                "' style='width: 90%; max-width: 500px;'></div>", unsafe_allow_html=True)
+    with open("serif.png", "rb") as f:
+        serif_encoded = base64.b64encode(f.read()).decode()
+    st.markdown(
+        f"<div style='text-align: center;'><img src='data:image/png;base64,{serif_encoded}' style='width: 90%; max-width: 500px;'></div>",
+        unsafe_allow_html=True
+    )
 
-# コメントをランダム表示（末尾の「。」を除去）
+# コメントをランダムに表示（末尾の「。」は除去）
 def show_random_comment():
     with open("nanako_comment.txt", "r", encoding="utf-8") as f:
         comments = f.read().splitlines()
-    comment = random.choice(comments).rstrip("。")  # ←句点を削除
+    comment = random.choice(comments).rstrip("。")
     st.markdown(f"<div style='text-align: center; padding: 20px;'>{comment}</div>", unsafe_allow_html=True)
 
-# 数字をランダムに7つ表示
+# ラッキー数字をランダムに7つ
 def generate_numbers():
     return sorted(random.sample(range(1, 38), 7))
 
-# 数字ランキング表示
+# 出現数字ランキング
 def show_ranking():
     df = pd.read_csv("data.csv")
     numbers = df.iloc[:, 1:].values.flatten()
@@ -66,16 +69,27 @@ def main():
     show_large_logo()
     show_serif_image()
 
-    # ボタンを中央に表示（スマホでもクリック可能な方式）
-    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-    if st.button("♡ ななこさんに占ってもらう ♡"):
+    # セッションでクリック判定
+    if "clicked" not in st.session_state:
+        st.session_state.clicked = False
+
+    # ↓ 画面下部に余白を確保しボタンを最後に表示
+    st.markdown("<div style='height:50px;'></div>", unsafe_allow_html=True)
+
+    # 中央配置されたボタン（スマホ対応）
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("♡ ななこさんに占ってもらう ♡"):
+            st.session_state.clicked = True
+
+    # ボタンクリック後の表示処理
+    if st.session_state.clicked:
         numbers = generate_numbers()
         st.markdown(
-            f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
+            f"<div style='text-align:center; font-size: 24px; font-weight:bold; padding: 10px;'>{', '.join(map(str, numbers))}</div>",
             unsafe_allow_html=True
         )
         show_random_comment()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
