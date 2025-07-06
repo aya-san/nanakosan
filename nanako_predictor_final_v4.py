@@ -22,7 +22,7 @@ def set_background(image_file):
 # メインアプリ
 def main():
     st.set_page_config(page_title="ななこさん", layout="centered")
-    set_background("anako_haikei.png")
+    set_background("nanako_haikei.png")
 
     # ロゴ（中央配置）
     st.markdown(
