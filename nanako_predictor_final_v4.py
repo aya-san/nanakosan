@@ -32,7 +32,7 @@ def get_random_comment(file_path):
 
 # メイン画面
 def main():
-    set_background("haikei.png")
+    set_background("nanako_haikei.png")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
