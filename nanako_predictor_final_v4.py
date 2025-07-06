@@ -41,11 +41,11 @@ def show_serif_image():
                 base64.b64encode(open("serif.png", "rb").read()).decode() +
                 "' style='width: 90%; max-width: 500px;'></div>", unsafe_allow_html=True)
 
-# コメントをランダム表示
+# コメントをランダム表示（末尾の「。」を除去）
 def show_random_comment():
     with open("nanako_comment.txt", "r", encoding="utf-8") as f:
         comments = f.read().splitlines()
-    comment = random.choice(comments)
+    comment = random.choice(comments).rstrip("。")  # ←句点を削除
     st.markdown(f"<div style='text-align: center; padding: 20px;'>{comment}</div>", unsafe_allow_html=True)
 
 # 数字をランダムに7つ表示
@@ -66,16 +66,16 @@ def main():
     show_large_logo()
     show_serif_image()
 
-    # 中央寄せの占いボタン（スマホ対応）
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("♡ ななこさんに占ってもらう ♡"):
-            numbers = generate_numbers()
-            st.markdown(
-                f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
-                unsafe_allow_html=True
-            )
-            show_random_comment()
+    # ボタンを中央に表示（スマホでもクリック可能な方式）
+    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+    if st.button("♡ ななこさんに占ってもらう ♡"):
+        numbers = generate_numbers()
+        st.markdown(
+            f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
+            unsafe_allow_html=True
+        )
+        show_random_comment()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
