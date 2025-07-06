@@ -61,6 +61,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+st.markdown(
+    f"<h3 style='text-align: center; font-size: 28px;'>{numbers_text}</h3>",
+    unsafe_allow_html=True
+)
+
         # コメント読み込み
         try:
             with open("nanako_comment.txt", "r", encoding="utf-8") as f:
