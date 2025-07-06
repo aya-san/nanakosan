@@ -67,6 +67,8 @@ def main():
     show_serif_image()
 
     # 占いボタン（中央）
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
     if st.button("♡ ななこさんに占ってもらう ♡"):
         numbers = generate_numbers()
         st.markdown(
