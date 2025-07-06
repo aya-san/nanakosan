@@ -64,7 +64,7 @@ def show_ranking(data):
 
 # --- アプリ本体 ---
 def main():
-    set_background("haikei.jpeg")
+    set_background("nanako_haikei.jpeg")
     st.markdown("<br><br>", unsafe_allow_html=True)
     
     # ロゴ
