@@ -1,90 +1,69 @@
-import streamlit as st
-import random
-from PIL import Image
-import base64
-import pandas as pd
 
-# --- 背景画像の設定 ---
+import streamlit as st
+import pandas as pd
+import random
+import base64
+
+# 背景画像を設定
 def set_background(image_file):
     with open(image_file, "rb") as f:
-        base64_image = base64.b64encode(f.read()).decode()
-    bg_style = f"""
-        <style>
+        encoded = base64.b64encode(f.read()).decode()
+    st.markdown(
+        f"""<style>
         .stApp {{
-            background-image: url("data:image/png;base64,{base64_image}");
+            background-image: url("data:image/jpeg;base64,{encoded}");
             background-size: cover;
         }}
-        </style>
-    """
-    st.markdown(bg_style, unsafe_allow_html=True)
+        </style>""",
+        unsafe_allow_html=True
+    )
 
-# --- ロゴ画像の表示（中央・サイズ調整） ---
+# ロゴ表示
 def show_logo():
-    st.markdown(
-        """
-        <div style="text-align: center;">
-            <img src="data:image/png;base64,{}" width="200">
-        </div>
-        """.format(get_base64("logo.png")),
-        unsafe_allow_html=True
-    )
+    st.markdown("<div style='text-align: center;'><img src='data:image/png;base64," + 
+                base64.b64encode(open("logo.png", "rb").read()).decode() + 
+                "' style='width: 40%;'></div>", unsafe_allow_html=True)
 
-# --- セリフ画像の表示（中央） ---
-def show_serif():
-    st.markdown(
-        """
-        <div style="text-align: center; margin-top: -40px;">
-            <img src="data:image/png;base64,{}" width="300">
-        </div>
-        """.format(get_base64("serif.png")),
-        unsafe_allow_html=True
-    )
+# セリフ画像表示
+def show_serif_image():
+    st.markdown("<div style='text-align: center;'><img src='data:image/png;base64," + 
+                base64.b64encode(open("serif.png", "rb").read()).decode() + 
+                "' style='width: 60%;'></div>", unsafe_allow_html=True)
 
-# --- base64変換 ---
-def get_base64(image_path):
-    with open(image_path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-# --- ラッキー数字の表示 ---
-def show_lucky_numbers():
-    data = pd.read_csv("data.csv")
-    numbers = []
-    for col in data.columns[1:8]:  # 数字1〜数字7
-        numbers.extend(data[col].tolist())
-    lucky = sorted(random.sample(set(numbers), 7))
-    st.markdown(
-        f"""
-        <div style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 20px;">
-            ラッキー数字: {', '.join(map(str, lucky))}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# --- コメント表示 ---
+# コメントをランダム表示
 def show_random_comment():
     with open("nanako_comment.txt", "r", encoding="utf-8") as f:
-        comments = [line.strip() for line in f if line.strip()]
+        comments = f.read().splitlines()
     comment = random.choice(comments)
-    st.markdown(
-        f"""
-        <div style="text-align: center; font-size: 18px; margin-top: 20px;">
-            {comment}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown(f"<div style='text-align: center; padding: 20px;'>{comment}</div>", unsafe_allow_html=True)
 
-# --- メイン関数 ---
+# 数字をランダムに7つ表示
+def generate_numbers():
+    return sorted(random.sample(range(1, 38), 7))
+
+# 数字ランキング表示
+def show_ranking():
+    df = pd.read_csv("data.csv")
+    numbers = df.iloc[:, 1:].values.flatten()
+    freq = pd.Series(numbers).value_counts().sort_values(ascending=False)
+    st.subheader("出現数字ランキング")
+    st.write(freq.head(10))
+
+# メイン関数
 def main():
-    st.set_page_config(page_title="ななこさん", layout="centered")
     set_background("haikei.jpeg")
-
     show_logo()
-    show_serif()
-    show_lucky_numbers()
-    show_random_comment()
+    show_serif_image()
 
-# --- 実行 ---
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("♡ ななこさんに占ってもらう ♡"):
+            numbers = generate_numbers()
+            st.markdown(f"<h3 style='text-align: center;'>ラッキーナンバー：{', '.join(map(str, numbers))}</h3>", unsafe_allow_html=True)
+            show_random_comment()
+    with col2:
+        if st.button("出現数字ランキング"):
+            show_ranking()
+
 if __name__ == "__main__":
     main()
