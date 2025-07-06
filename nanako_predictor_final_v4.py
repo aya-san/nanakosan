@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import random
@@ -15,6 +16,7 @@ def set_background(image_file):
         .stApp {{
             background-image: url("data:image/jpeg;base64,{encoded}");
             background-size: cover;
+            background-attachment: fixed;
         }}
         </style>""",
         unsafe_allow_html=True
@@ -22,7 +24,6 @@ def set_background(image_file):
 
 # ロゴ表示（大きめ、中央、スマホ対応）
 def show_large_logo():
-    import base64
     with open("logo.png", "rb") as f:
         logo_encoded = base64.b64encode(f.read()).decode()
     st.markdown(
@@ -39,7 +40,7 @@ def show_large_logo():
 def show_serif_image():
     st.markdown("<div style='text-align: center;'><img src='data:image/png;base64," +
                 base64.b64encode(open("serif.png", "rb").read()).decode() +
-                "' style='width: 80%;'></div>", unsafe_allow_html=True)
+                "' style='width: 90%; max-width: 500px;'></div>", unsafe_allow_html=True)
 
 # コメントをランダム表示
 def show_random_comment():
@@ -63,13 +64,18 @@ def show_ranking():
 # メイン関数
 def main():
     set_background("nanako_haikei.png")
-    show_large_logo()  # ✅ 正しい関数名
+    show_large_logo()
     show_serif_image()
 
-    # 占いボタン（中央）
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    if st.button("♡ ななこさんに占ってもらう ♡"):
+    if "clicked" not in st.session_state:
+        st.session_state.clicked = False
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("♡ ななこさんに占ってもらう ♡"):
+            st.session_state.clicked = True
+
+    if st.session_state.clicked:
         numbers = generate_numbers()
         st.markdown(
             f"<h3 style='text-align: center; font-size: 28px;'>{', '.join(map(str, numbers))}</h3>",
