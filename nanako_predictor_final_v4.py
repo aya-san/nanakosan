@@ -69,9 +69,16 @@ def main():
     show_large_logo()
     show_serif_image()
 
-    # セッションでクリック判定
-    if "clicked" not in st.session_state:
-        st.session_state.clicked = False
+    # ボタンを中央に表示（スマホでもクリック可能な方式）
+    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+    if st.button("♡ ななこさんに占ってもらう ♡"):
+        numbers = generate_numbers()
+        st.markdown(
+            f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
+            unsafe_allow_html=True
+        )
+        show_random_comment()
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # ↓ 画面下部に余白を確保しボタンを最後に表示
     st.markdown("<div style='height:50px;'></div>", unsafe_allow_html=True)
