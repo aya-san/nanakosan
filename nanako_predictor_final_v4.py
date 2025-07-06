@@ -57,7 +57,7 @@ def get_frequency_ranking(data_path):
 
 # アプリ本体
 def main():
-    set_background("nanako_haikei.jpeg")  # 拡張子注意
+    set_background("nanako_haikei.png")  # 拡張子注意
     show_logo()
     show_serif()
     st.markdown("<br>", unsafe_allow_html=True)
