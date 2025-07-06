@@ -3,6 +3,8 @@ import pandas as pd
 import random
 import base64
 
+st.set_page_config(layout="centered")
+
 # 警告メッセージ非表示
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_option('deprecation.showfileUploaderEncoding', False)
