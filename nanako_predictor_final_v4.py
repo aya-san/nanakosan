@@ -41,8 +41,9 @@ def show_serif():
 # コメント1つだけランダム表示
 def get_random_comment(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
-        comments = [c.strip() for c in f.read().split("。") if c.strip()]
-    return random.choice(comments) + "。"
+        text = f.read()
+    comments = [c.strip() for c in text.split("。") if c.strip()]
+    return random.choice(comments)
 
 # ランダム数字生成
 def generate_lucky_numbers():
