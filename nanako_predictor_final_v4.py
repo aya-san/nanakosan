@@ -20,7 +20,7 @@ def set_background(image_file):
         </style>
         """, unsafe_allow_html=True)
 
-set_background("haikei.jpeg")
+set_background("nanako_haikei.png")
 
 # --- 画像表示 ---
 st.image("logo.png", width=250)  # ロゴを小さく中央表示
