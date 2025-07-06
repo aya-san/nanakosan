@@ -63,7 +63,7 @@ def show_ranking():
 # メイン関数
 def main():
     set_background("nanako_haikei.png")
-    show_logo()
+    show_large_logo()  # ✅ 正しい関数名
     show_serif_image()
 
     # 占いボタン（中央）
