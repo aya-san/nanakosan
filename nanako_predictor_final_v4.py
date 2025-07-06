@@ -3,93 +3,67 @@ import pandas as pd
 import random
 import base64
 
-# --- 背景画像設定 ---
+# 背景画像を設定する関数
 def set_background(image_file):
     with open(image_file, "rb") as f:
         data = f.read()
     encoded = base64.b64encode(data).decode()
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpeg;base64,{encoded}");
-            background-size: cover;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# --- メイン画像を中央表示 ---
-def show_centered_image(image_path, width=300):
-    st.markdown(
-        f"""
-        <div style="display: flex; justify-content: center;">
-            <img src="data:image/png;base64,{base64.b64encode(open(image_path, 'rb').read()).decode()}" width="{width}">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# --- ボタン画像表示 ---
-def image_button(image_path, key):
-    button_html = f"""
-        <style>
-            .img-button {{
-                background: none;
-                border: none;
-                padding: 0;
-            }}
-        </style>
-        <button class="img-button" onclick="document.getElementById('{key}').click()">
-            <img src="data:image/png;base64,{base64.b64encode(open(image_path, 'rb').read()).decode()}" width="300">
-        </button>
-        <input type="submit" id="{key}" style="display: none;">
+    page_bg_img = f"""
+    <style>
+    [data-testid="stApp"] {{
+        background-image: url("data:image/png;base64,{encoded}");
+        background-size: cover;
+        background-position: top left;
+        background-repeat: no-repeat;
+    }}
+    </style>
     """
-    return st.markdown(button_html, unsafe_allow_html=True)
+    st.markdown(page_bg_img, unsafe_allow_html=True)
 
-# --- 数字生成 ---
-def generate_lucky_numbers():
-    return sorted(random.sample(range(1, 38), 7))
+# ランダムコメントを読み込む関数
+def load_random_comment(file_path):
+    with open(file_path, encoding="utf-8") as f:
+        comments = [line.strip() for line in f if line.strip()]
+    return random.choice(comments)
 
-# --- 出現頻度ランキング ---
-def show_ranking(data):
-    numbers = data.iloc[:, 1:].values.flatten()
-    frequency = pd.Series(numbers).value_counts().sort_values(ascending=False)
-    freq_df = pd.DataFrame({
-        "数字": frequency.index,
-        "出現回数": frequency.values
-    }).head(10)
-    st.table(freq_df)
+# 占いページ
+def show_fortune():
+    st.image("logo.png", width=300)
+    st.markdown("<h3 style='text-align: center;'>迷っているのね<br>アタクシが数字を選んでさしあげましょう</h3>", unsafe_allow_html=True)
+    st.markdown("<hr>", unsafe_allow_html=True)
+    comment = load_random_comment("nanako_comment.txt")
+    st.markdown(f"<div style='text-align:center; font-size:18px;'>{comment}</div>", unsafe_allow_html=True)
 
-# --- アプリ本体 ---
+# ランキングページ
+def show_ranking():
+    df = pd.read_csv("data.csv")
+    numbers = df.iloc[:, 1:].values.flatten()
+    counts = pd.Series(numbers).value_counts().sort_values(ascending=False)
+    ranking_df = counts.reset_index()
+    ranking_df.columns = ['数字', '出現回数']
+    st.markdown("<h3 style='text-align: center;'>出現数字ランキング</h3>", unsafe_allow_html=True)
+    st.table(ranking_df)
+
+# メイン
 def main():
     set_background("nanako_haikei.png")
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
-    # ロゴ
-    show_centered_image("logo.png", width=250)
-
-    # セリフ
-    show_centered_image("serif.png", width=400)
+    st.image("logo.png", width=300)
+    st.markdown("<h3 style='text-align: center;'>迷っているのね<br>アタクシが数字を選んでさしあげましょう</h3>", unsafe_allow_html=True)
+    st.markdown("<hr>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("♡ななこさんに占ってもらう♡"):
-            numbers = generate_lucky_numbers()
-            st.markdown(f"<h3 style='text-align:center'>今日のラッキー数字は：</h3>", unsafe_allow_html=True)
-            st.markdown(f"<h1 style='text-align:center; color:hotpink'>{', '.join(map(str, numbers))}</h1>", unsafe_allow_html=True)
-
+        if st.image("botann.png", use_column_width=True):
+            st.session_state.page = "fortune"
     with col2:
-        if st.button("出現数字ランキング"):
-            data = pd.read_csv("data.csv")
-            st.markdown(f"<h3 style='text-align:center'>出現頻度ランキング</h3>", unsafe_allow_html=True)
-            show_ranking(data)
+        if st.image("button2.png", use_column_width=True):
+            st.session_state.page = "ranking"
 
-    # コメント表示（任意）
-    with open("nanako_comment.txt", encoding="utf-8") as f:
-        comment = f.read()
-    st.markdown(f"<div style='text-align:center; margin-top:40px;'>{comment}</div>", unsafe_allow_html=True)
+    if "page" in st.session_state:
+        if st.session_state.page == "fortune":
+            show_fortune()
+        elif st.session_state.page == "ranking":
+            show_ranking()
 
 if __name__ == "__main__":
     main()
