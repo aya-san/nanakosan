@@ -60,7 +60,7 @@ def get_frequency_ranking(data_path):
 
 # メインアプリ
 def main():
-    set_background("nanako_haikei.jpeg")  # または .png に変更してもOK
+    set_background("nanako_haikei.png")  # または .png に変更してもOK
 
     show_logo()
     show_serif()
