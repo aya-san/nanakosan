@@ -76,19 +76,21 @@ def main():
     # ↓ 画面下部に余白を確保しボタンを最後に表示
     st.markdown("<div style='height:50px;'></div>", unsafe_allow_html=True)
 
-    # 中央配置されたボタン（スマホ対応）
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("♡ ななこさんに占ってもらう ♡"):
-            st.session_state.clicked = True
+    # ボタン画像クリックで占い
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("♡ ななこさんに占ってもらう ♡", key="uranai"):
+        numbers = sorted(random.sample(range(1, 38), 7))
+        comment = get_random_comment("nanako_comment.txt")
+        st.markdown(f"<h3 style='text-align:center;'>{'・'.join(map(str, numbers))}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align:center; font-size:22px;'>{comment}</p>", unsafe_allow_html=True)
 
-    # ボタンクリック後の表示処理
-    if st.session_state.clicked:
-        numbers = generate_numbers()
-        st.markdown(
-            f"<div style='text-align:center; font-size: 24px; font-weight:bold; padding: 10px;'>{', '.join(map(str, numbers))}</div>",
-            unsafe_allow_html=True
-        )
+with col2:
+    if st.button("出現数字ランキング", key="ranking"):
+        freq = calc_number_frequency("data.csv")
+        st.markdown("### 出現ランキング")
+        for num, count in freq.items():
+            st.write(f"{int(num):2d} → {count}回")
         show_random_comment()
 
 if __name__ == "__main__":
