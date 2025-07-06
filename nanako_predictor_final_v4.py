@@ -70,15 +70,13 @@ def main():
     if "clicked" not in st.session_state:
         st.session_state.clicked = False
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("♡ ななこさんに占ってもらう ♡"):
-            st.session_state.clicked = True
-
-    if st.session_state.clicked:
+    # 占いボタン（スマホ対応の中央寄せ）
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    if st.button("♡ ななこさんに占ってもらう ♡"):
         numbers = generate_numbers()
         st.markdown(
-            f"<h3 style='text-align: center; font-size: 28px;'>{', '.join(map(str, numbers))}</h3>",
+            f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
             unsafe_allow_html=True
         )
         show_random_comment()
