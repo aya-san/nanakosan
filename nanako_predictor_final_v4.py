@@ -25,48 +25,73 @@ def load_comments(txt_path):
     return [c for c in comments if c.strip()]
 
 def display_logo():
-    st.image("logo.png", use_column_width=False, width=300)
+    st.markdown(
+        """
+        <div style='text-align:center;'>
+            <img src='data:image/png;base64,{}' width='180'>
+        </div>
+        """.format(get_base64("logo.png")),
+        unsafe_allow_html=True
+    )
 
 def display_serif():
-    st.image("serif.png", use_column_width=False, width=300)
+    st.image("serif.png", use_column_width=False, width=280)
+
+def get_base64(file_path):
+    with open(file_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
 
 def display_buttons():
-    col1, col2 = st.columns(2)
-    with col1:
-        clicked = st.button("♡ななこさんに占ってもらう♡", key="uranai", help="画像ボタンに差し替え予定")
-        if clicked:
-            show_prediction()
-    with col2:
-        clicked2 = st.button("出現数字ランキング", key="ranking", help="画像ボタンに差し替え予定（仮）")
-        if clicked2:
-            st.subheader("出現数字ランキング（仮）")  # 仮の機能
+    st.markdown(
+        """
+        <div style='text-align:center;'>
+            <form action="?predict" method="post">
+                <button style="border:none;background:none;">
+                    <img src='data:image/png;base64,{}' width='250'>
+                </button>
+            </form>
+            <br>
+            <form action="?ranking" method="post">
+                <button style="border:none;background:none;">
+                    <img src='data:image/png;base64,{}' width='250'>
+                </button>
+            </form>
+        </div>
+        """.format(get_base64("botann.png"), get_base64("button2.png")),
+        unsafe_allow_html=True
+    )
 
 def show_prediction():
     df = pd.read_csv("data.csv")
     numbers = sorted(random.sample(range(1, 38), 7))
     st.markdown(
-        f"<h3 style='text-align:center;'>🎱 ラッキー数字: {', '.join(map(str, numbers))}</h3>",
+        f"<h3 style='text-align:center;'>ラッキー数字: {', '.join(map(str, numbers))}</h3>",
         unsafe_allow_html=True
     )
     comments = load_comments("nanako_comment.txt")
-    comment = random.choice(comments)
-    st.write(f"**{comment.strip()}**")
+    comment = random.choice(comments).strip()
+    st.markdown(f"<div style='text-align:center;'>{comment}</div>", unsafe_allow_html=True)
 
 def main():
     set_background("nanako_haikei.png")
     st.markdown("<br>", unsafe_allow_html=True)
-    
-    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-    display_logo()
-    st.markdown("</div>", unsafe_allow_html=True)
 
+    display_logo()
     st.markdown("<br>", unsafe_allow_html=True)
+    
     st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
     display_serif()
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     display_buttons()
+
+    # クエリ処理によってボタンを識別
+    query_params = st.experimental_get_query_params()
+    if "predict" in query_params:
+        show_prediction()
+    elif "ranking" in query_params:
+        st.subheader("出現数字ランキング（仮）")
 
 if __name__ == "__main__":
     main()
