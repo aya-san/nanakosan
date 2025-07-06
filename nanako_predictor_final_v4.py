@@ -45,8 +45,14 @@ def show_serif_image():
 def show_random_comment():
     with open("nanako_comment.txt", "r", encoding="utf-8") as f:
         comments = f.read().splitlines()
-    comment = random.choice(comments)
-    st.markdown(f"<div style='text-align: center; padding: 20px;'>{comment}</div>", unsafe_allow_html=True)
+    
+    # ランダムに1つ選び、末尾の「。」があれば削除
+    comment = random.choice(comments).rstrip("。")
+    
+    st.markdown(
+        f"<div style='text-align: center; padding: 20px;'>{comment}</div>",
+        unsafe_allow_html=True
+    )
 
 # 数字をランダムに7つ表示
 def generate_numbers():
