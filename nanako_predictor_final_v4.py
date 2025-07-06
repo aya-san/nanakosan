@@ -53,7 +53,7 @@ def show_prediction():
     st.write(f"**{comment.strip()}**")
 
 def main():
-    set_background("haikei.jpeg")
+    set_background("nanako_haikei.png")
     st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
