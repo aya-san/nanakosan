@@ -56,7 +56,7 @@ def show_ranking():
 
 # メイン関数
 def main():
-    set_background("haikei.jpeg")
+    set_background("nanako_haikei.png")
     show_logo()
     show_serif_image()
 
