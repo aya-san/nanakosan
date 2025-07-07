@@ -72,16 +72,35 @@ def main():
     show_large_logo()
     show_serif_image()
 
-    # 中央寄せの占いボタン（スマホ対応）
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("♡ ななこさんに占ってもらう ♡"):
-            numbers = generate_numbers()
-            st.markdown(
-                f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
-                unsafe_allow_html=True
-            )
-            show_random_comment()
+    if show_uranai_button():
+        numbers = generate_numbers()
+        st.markdown(
+            f"<div style='text-align:center; font-size: 22px;'>{', '.join(map(str, numbers))}</div>",
+            unsafe_allow_html=True
+        )
+        show_random_comment()
+
+   # 中央寄せの大きな占いボタン（スマホ対応）
+def show_uranai_button():
+    button_html = """
+        <div style="text-align: center; padding: 30px;">
+            <button onclick="document.getElementById('click-button').click();"
+                style="
+                    background-color: #ffccdd;
+                    color: black;
+                    font-size: 20px;
+                    padding: 15px 30px;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+                ">
+                ♡ ななこさんに占ってもらう ♡
+            </button>
+        </div>
+    """
+    st.markdown(button_html, unsafe_allow_html=True)
+    return st.button("", key="click-button")
 
 if __name__ == "__main__":
     main()
