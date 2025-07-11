@@ -110,8 +110,10 @@ def show_uranai_button():
             </form>
         </div>
     """
-    st.markdown(button_html, unsafe_allow_html=True)
-    return st.form_submit_button("", key="nanako_button")
-
+    with st.form("nanako_form"):
+    submitted = st.form_submit_button("", key="nanako_button")
+    if submitted:
+        # 占い処理をここに書く
+        pass
 if __name__ == "__main__":
     main()
