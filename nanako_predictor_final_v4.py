@@ -80,7 +80,7 @@ def main():
         )
         show_random_comment()
 
-   # 中央寄せの大きな占いボタン（スマホ対応）
+# 中央寄せの大きな占いボタン（スマホ対応）
 def show_uranai_button():
     button_html = """
         <style>
@@ -105,15 +105,14 @@ def show_uranai_button():
         }
         </style>
         <div class="center-button">
-            <form action="" method="post">
-                <button type="submit">♡ ななこさんに占ってもらう ♡</button>
-            </form>
+            ♡ ななこさんに占ってもらう ♡
         </div>
     """
+    st.markdown(button_html, unsafe_allow_html=True)
+
+    # 占いボタン本体（見えないボタンでもOK）
     with st.form("nanako_form"):
-    submitted = st.form_submit_button("", key="nanako_button")
-    if submitted:
-        # 占い処理をここに書く
-        pass
+        submitted = st.form_submit_button("", key="nanako_button")
+    return submitted
 if __name__ == "__main__":
     main()
