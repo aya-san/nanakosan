@@ -56,7 +56,9 @@ def show_random_comment():
 
 # 数字をランダムに7つ表示
 def generate_numbers():
-    return sorted(random.sample(range(1, 38), 7))
+    numbers = sorted(random.sample(range(1, 38), 7))  # 内部は昇順
+    random.shuffle(numbers)  # 表示順だけシャッフル
+    return numbers
 
 # 数字ランキング表示
 def show_ranking():
