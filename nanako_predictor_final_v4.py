@@ -82,37 +82,8 @@ def main():
 
 # 中央寄せの大きな占いボタン（スマホ対応）
 def show_uranai_button():
-    button_html = """
-        <style>
-        .center-button {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-        }
-        .center-button button {
-            background-color: #ffe4ec;
-            color: #d63384;
-            font-size: 20px;
-            font-weight: bold;
-            padding: 14px 28px;
-            border: 2px solid #d63384;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
-        }
-        .center-button button:hover {
-            background-color: #ffd6e8;
-        }
-        </style>
-        <div class="center-button">
-            ♡ ななこさんに占ってもらう ♡
-        </div>
-    """
-    st.markdown(button_html, unsafe_allow_html=True)
-
-    # 占いボタン本体（見えないボタンでもOK）
     with st.form("nanako_form"):
-        submitted = st.form_submit_button("", key="nanako_button")
+        submitted = st.form_submit_button("♡ ななこさんに占ってもらう ♡")
     return submitted
 if __name__ == "__main__":
     main()
